@@ -1,6 +1,6 @@
 # Copilot Code Review – Repository Guidelines (sample_front)
 
-本リポジトリは **React + TypeScript + Vite** の SPA フロントエンドです。  
+本リポジトリは **Next.js（App Router）+ React + TypeScript** のフロントエンドです。  
 Copilot は以下の指針に基づいて Pull Request（PR）をレビューしてください。
 
 > 💬 **レビュー言語指定**  
@@ -32,7 +32,7 @@ Copilot は以下の指針に基づいて Pull Request（PR）をレビューし
 - `tsconfig` は **strict** を維持（`any` は原則禁止、必要時は理由コメント）。
 - **`import type`** の活用、`zod/yup` 等で **実行時バリデーション** を追加検討。
 - Hooks ルール：`eslint-plugin-react-hooks` を満たす（依存配列の漏れなし）。
-- 共通型は `src/types/**` に集約、API 型は **サーバのスキーマ**（OpenAPIなど）と同期。
+- 共通型は `types/**` に集約、API 型は **サーバのスキーマ**（OpenAPIなど）と同期。
 
 ### 2) アクセシビリティ（A11y）
 
@@ -47,12 +47,12 @@ Copilot は以下の指針に基づいて Pull Request（PR）をレビューし
 - **メモ化**：`useMemo/useCallback/memo` は測定に基づき最小限で。
 - **画像最適化**：サイズ、`loading="lazy"`、`decoding="async"`、`srcset`。
 - リストは **仮想化**（大規模時）。不要な再レンダリング要因を除去（props 安定化）。
-- Vite の `build.chunkSizeWarningLimit` を意識し、巨大依存の分割を検討。
+- `next/dynamic` や Server Components を活用し、クライアントバンドルの肥大化を避ける。
 
 ### 4) セキュリティ
 
 - **XSS**：`dangerouslySetInnerHTML` は禁止（やむを得ない場合は厳格サニタイズ）。
-- **CSRの機微情報漏洩** 回避：`.env` の **VITE\_** 以外はクライアントに露出させない。
+- **クライアントへの機微情報漏洩** 回避：`.env` の **NEXT_PUBLIC_** 以外はクライアントに露出させない。
 - **CSP/iframe sandbox/referrerPolicy** の設定検討。外部リンクは `rel="noopener"`。
 - 依存は定期更新。既知脆弱性（`npm audit`）に対応。
 
@@ -65,14 +65,14 @@ Copilot は以下の指針に基づいて Pull Request（PR）をレビューし
 
 ### 6) ルーティング / エラーハンドリング
 
-- `react-router` の **エラーハンドラ**・**ローディング UI**・**境界（ErrorBoundary）** を整備。
+- App Router の `error.tsx`・`loading.tsx`・`not-found.tsx` で **エラーハンドラ**・**ローディング UI**・**境界** を整備。
 - 非同期コンポーネントは `Suspense` とスケルトン UI を用意。
 
 ### 7) スタイル / UI
 
 - 設計は **デザイントークン**／ユーティリティ（Tailwind 等）を一貫利用。
 - コンポーネントは **小さく再利用可能** に。Props の責務を明確化。
-- スピナー/ボタンなどの共通 UI は `src/components/ui/**` に。
+- スピナー/ボタンなどの共通 UI は `components/ui/**` に。
 
 ### 8) テスト（推奨構成）
 
@@ -85,16 +85,16 @@ Copilot は以下の指針に基づいて Pull Request（PR）をレビューし
 
 ## Files of Interest（Copilot が特に見る場所）
 
-- `src/**`（`components/`, `features/`, `routes/`, `hooks/`, `types/`, `lib/`）
-- API クライアント：`src/lib/apiClient.ts`（想定）
-- ルーティング：`src/routes/**`
-- 設定：`vite.config.ts`, `tsconfig*.json`, `.eslintrc.*`, `package.json`
+- `app/**`（`layout.tsx`, `page.tsx`, `error.tsx`, `loading.tsx` など）および `components/`, `hooks/`, `types/`, `lib/`
+- API クライアント：`lib/apiClient.ts`（想定）
+- ルーティング：`app/**`（App Router）
+- 設定：`next.config.ts`, `tsconfig*.json`, `eslint.config.mjs`, `package.json`
 - 環境：`.env*`（※レビューは差分のみ参照）
-- テスト：`src/**/*.test.tsx?`, `playwright/**`, `msw/**`
+- テスト：`**/*.test.tsx?`, `playwright/**`, `msw/**`
 
 ## Files to Ignore（ノイズ除外）
 
-- `dist/**`, `node_modules/**`, `.vite/**`
+- `dist/**`, `out/**`, `node_modules/**`, `.next/**`
 - 生成物、ビルド結果、ロックファイルの大量差分
 
 ---
@@ -132,7 +132,7 @@ Copilot は以下の指針に基づいて Pull Request（PR）をレビューし
 
 ## 参考コード（雛形）
 
-### `src/lib/apiClient.ts`（例）
+### `lib/apiClient.ts`（例）
 
 ```ts
 export type ApiError = { status: number; message: string; cause?: unknown };
