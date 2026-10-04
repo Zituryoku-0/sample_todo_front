@@ -45,8 +45,8 @@ export default function Login() {
         setError("");
 
         const result = userSchema.safeParse({
-            userId: formData.get("userId") ?? "",
-            password: formData.get("password") ?? "",
+            userId,
+            password
         });
 
         if (!result.success) {
@@ -54,7 +54,7 @@ export default function Login() {
             setFieldErrors(error.fieldErrors);
             return;
         }
-
+        setFieldErrors({});
         setLoading(true);
 
         try {
