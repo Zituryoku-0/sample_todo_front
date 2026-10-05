@@ -94,11 +94,11 @@ describe("ログイン画面", () => {
         submitLogin();
 
         await waitFor(() => {
-            expect(router.replace).toHaveBeenCalledWith("/");
+            expect(router.replace).toHaveBeenCalledWith("/home");
         });
 
         expect(fetchMock).toHaveBeenCalledWith(
-            "https://api.example.test/auth/login",
+            "/api/login",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
