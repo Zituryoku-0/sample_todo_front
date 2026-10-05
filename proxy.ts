@@ -19,6 +19,10 @@ export function proxy(request: NextRequest) {
   }
 
   if (authenticatied) {
+    // パス「/」はホームに返す
+    if (request.nextUrl.pathname === "/") {
+      return NextResponse.redirect(new URL(HOME_PATH, request.url));
+    }
     return NextResponse.next();
   }
 

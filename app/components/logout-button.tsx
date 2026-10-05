@@ -1,12 +1,13 @@
 "use client";
 
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LogoutButton() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     async function handleLogout() {
         if (loading) return;
@@ -22,21 +23,28 @@ export default function LogoutButton() {
                 throw new Error("ログアウトに失敗しました。");
             }
 
-            router.replace("/page/login");
+            router.replace("/login");
             router.refresh();
         } catch {
-            setLoading(false);
+            setError('ログアウトに失敗しました。');
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <Button
-            onClick={handleLogout}
-            loading={loading}
-        >
-            ログアウト
-        </Button>
+        <>
+            {error && (
+                <Text c="red" role="alert">
+                    {error}
+                </Text>
+            )}
+            <Button
+                onClick={handleLogout}
+                loading={loading}
+            >
+                ログアウト
+            </Button>
+        </>
     )
 }
