@@ -1,5 +1,6 @@
 "use client";
 
+import Header from "@/app/components/header";
 import {
     Button,
     Center,
@@ -24,7 +25,7 @@ type FieldErrors = {
     password?: string[];
 };
 
-export default function Login() {
+export default function Home() {
     const router = useRouter();
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
     const [error, setError] = useState("");
@@ -58,7 +59,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch(`${apiUrl}/auth/login`, {
+            const response = await fetch(`/api/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,7 +77,7 @@ export default function Login() {
                 return;
             }
 
-            router.replace("/");
+            router.replace("/home");
             router.refresh();
         } catch {
             setError("サーバーに接続できませんでした。");
@@ -88,35 +89,11 @@ export default function Login() {
     return (
         <Center component="main" mih="100vh" px="md">
             <Paper withBorder shadow="sm" p="xl" radius="md" w="100%" maw={420}>
+                <Header />
                 <form onSubmit={handleSubmit} noValidate>
                     <Title order={2} ta="center" mb="lg">
-                        ログイン
+                        ホーム画面
                     </Title>
-                    <Stack gap="md">
-                        <TextInput
-                            label="ユーザーID"
-                            placeholder="ユーザーIDを入力"
-                            name="userId"
-                            autoComplete="username"
-                            error={fieldErrors.userId?.[0]}
-                        />
-                        <PasswordInput
-                            label="パスワード"
-                            placeholder="パスワードを入力"
-                            name="password"
-                            autoComplete="current-password"
-                            error={fieldErrors.password?.[0]}
-                        />
-
-                        {error && (
-                            <Text c="red" role="alert">
-                                {error}
-                            </Text>
-                        )}
-                        <Button type="submit" fullWidth mt="sm">
-                            ログインする
-                        </Button>
-                    </Stack>
                 </form >
             </Paper>
         </Center>
