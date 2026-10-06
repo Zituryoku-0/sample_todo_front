@@ -58,7 +58,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch(`${apiUrl}/auth/login`, {
+            const response = await fetch(`/api/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export default function Login() {
                 return;
             }
 
-            router.replace("/");
+            router.replace("/home");
             router.refresh();
         } catch {
             setError("サーバーに接続できませんでした。");

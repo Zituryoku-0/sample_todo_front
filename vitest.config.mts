@@ -6,5 +6,13 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     environment: "jsdom",
+    coverage: {
+      provider: "v8",
+      include: [
+        "app/**/*.{js,jsx,ts,tsx}",
+        "lib/**/*.{js,jsx,ts,tsx}",
+        "proxy.ts",
+      ],
+    },
   },
 });
