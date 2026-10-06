@@ -6,7 +6,7 @@ import LogoutButton from "./logout-button";
 export default function Header() {
     const pathname = usePathname();
 
-    if (pathname === "/page/login") {
+    if (pathname === "/login") {
         return null;
     }
 
