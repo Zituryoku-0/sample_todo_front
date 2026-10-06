@@ -16,7 +16,7 @@ export default function Home() {
             <Paper withBorder shadow="sm" p="xl" radius="md" w="100%" maw={420}>
                 <Header />
                 <Title order={2} ta="center" mb="lg">
-                    これはホーム画面デス。
+                    これはホーム画面です。
                 </Title>
             </Paper>
         </Center>
