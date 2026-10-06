@@ -1,5 +1,4 @@
-"use client";
-
+import type { Metadata } from "next";
 import Header from "@/app/components/header";
 import {
     Center,
@@ -7,7 +6,10 @@ import {
     Title,
 } from "@mantine/core";
 
-
+export const metadata: Metadata = {
+    title: "ホーム | Todo",
+    description: "Todoリストのホーム画面",
+};
 
 export default function Home() {
 
