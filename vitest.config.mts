@@ -9,10 +9,9 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: [
-        "app/(authenticated)/**/*.{js,jsx,ts,tsx}",
-        "src/(public)/**/*.{js,jsx,ts,tsx}",
-        "src/api/**/*.{js,jsx,ts,tsx}",
-        "src/components/**/*.{js,jsx,ts,tsx}",
+        "app/**/*.{js,jsx,ts,tsx}",
+        "lib/**/*.{js,jsx,ts,tsx}",
+        "proxy.ts",
       ],
     },
   },
