@@ -9,7 +9,6 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Login from "./page";
 import "@testing-library/jest-dom/vitest";
-import { stat } from "fs";
 
 const router = vi.hoisted(() => ({
     replace: vi.fn(),
@@ -31,8 +30,8 @@ function renderLogin() {
 }
 
 function submitLogin() {
-    fireEvent.change(screen.getByLabelText("ユーザーID"), {
-        target: { value: "test-user" },
+    fireEvent.change(screen.getByLabelText("メールアドレス"), {
+        target: { value: "test@example.com" },
     });
     fireEvent.change(screen.getByLabelText("パスワード"), {
         target: { value: "test-password" },
@@ -65,7 +64,7 @@ describe("ログイン画面", () => {
 
     it("初期表示", () => {
         renderLogin();
-        expect(screen.getByLabelText("ユーザーID")).toBeInTheDocument();
+        expect(screen.getByLabelText("メールアドレス")).toBeInTheDocument();
         expect(screen.getByLabelText("パスワード")).toBeInTheDocument();
         expect(
             screen.getByRole("button", { name: "ログインする" }),
@@ -78,7 +77,7 @@ describe("ログイン画面", () => {
         fireEvent.click(screen.getByRole("button", { name: "ログインする" }));
 
         expect(
-            screen.getByText("ユーザーIDを入力して下さい。"),
+            screen.getByText("メールアドレスを入力して下さい。"),
         ).toBeInTheDocument();
         expect(
             screen.getByText("パスワードを入力して下さい。"),
@@ -104,7 +103,7 @@ describe("ログイン画面", () => {
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify({
-                    userId: "test-user",
+                    email: "test@example.com",
                     password: "test-password",
                 }),
             },
