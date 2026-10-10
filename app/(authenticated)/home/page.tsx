@@ -5,6 +5,7 @@ import {
     Paper,
     Title,
 } from "@mantine/core";
+import TodoForm from "@/app/components/todo-form";
 
 export const metadata: Metadata = {
     title: "ホーム | Todo",
@@ -18,8 +19,9 @@ export default function Home() {
             <Paper withBorder shadow="sm" p="xl" radius="md" w="100%" maw={420}>
                 <Header />
                 <Title order={2} ta="center" mb="lg">
-                    これはホーム画面です。
+                    Todo
                 </Title>
+                <TodoForm />
             </Paper>
         </Center>
     );
