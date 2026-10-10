@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, getJwtExpiration } from "@/lib/auth";
-import { fromJSONSchema, success } from "zod";
 
 type LoginResponse = {
-  accessToken?: string;
-  access_token?: string;
+  accessToken: {
+    accessToken: string;
+  };
 };
 
 export async function POST(requst: Request) {
@@ -37,7 +37,7 @@ export async function POST(requst: Request) {
     }
 
     const data = (await nestResponse.json()) as LoginResponse;
-    const token = data.accessToken ?? data.access_token;
+    const token = data.accessToken?.accessToken;
     const expiration = token ? getJwtExpiration(token) : null;
 
     const maxAge = expiration ? expiration - Math.floor(Date.now() / 1000) : 0;
