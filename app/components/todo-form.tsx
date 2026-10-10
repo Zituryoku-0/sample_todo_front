@@ -4,7 +4,7 @@ import { useState } from "react";
 import { z } from "zod";
 
 const todoSchema = z.object({
-    title: z.string().trim().min(1, "Todoを入力して下さい").max(100, "Todoは100も字以内で入力して下さい"),
+    title: z.string().trim().min(1, "Todoを入力して下さい").max(100, "Todoは100文字以内で入力して下さい"),
 });
 
 export default function TodoForm() {
