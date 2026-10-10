@@ -1,10 +1,19 @@
 import { ACCESS_TOKEN_COOKIE } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 type CreateTodoRequest = {
   title: string;
 };
+
+const createTodoSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, "Todoを入力して下さい")
+    .max(100, "Todoは100文字以内で入力して下さい"),
+});
 
 export async function POST(request: Request) {
   const apiUrl = process.env.AUTH_API_URL;
@@ -17,7 +26,18 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = (await request.json()) as CreateTodoRequest;
+    const body = await request.json();
+    const parsed = createTodoSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { message: z.flattenError(parsed.error) },
+        { status: 400 },
+      );
+    }
+
+    const title = parsed.data;
+
     const cookieStore = await cookies();
     const accessToken = cookieStore.get(ACCESS_TOKEN_COOKIE)?.value;
 
@@ -34,7 +54,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(title),
       cache: "no-store",
     });
 
