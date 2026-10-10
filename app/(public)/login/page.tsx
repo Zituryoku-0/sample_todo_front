@@ -15,12 +15,12 @@ import { useState } from "react";
 import { z } from "zod";
 
 const userSchema = z.object({
-    userId: z.string().min(1, "ユーザーIDを入力して下さい。"),
+    email: z.string().min(1, "メールアドレスを入力して下さい。"),
     password: z.string().min(1, "パスワードを入力して下さい。"),
 });
 
 type FieldErrors = {
-    userId?: string[];
+    email?: string[];
     password?: string[];
 };
 
@@ -37,7 +37,7 @@ export default function Login() {
         if (loading) return;
 
         const formData = new FormData(event.currentTarget);
-        const userId = String(formData.get("userId") ?? "").trim();
+        const email = String(formData.get("email") ?? "").trim();
         const password = String(formData.get("password") ?? "");
 
         const apiUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
@@ -45,7 +45,7 @@ export default function Login() {
         setError("");
 
         const result = userSchema.safeParse({
-            userId,
+            email,
             password
         });
 
@@ -70,7 +70,7 @@ export default function Login() {
             // ログイン失敗
             if (!response.ok) {
                 setError(
-                    response.status === 401 ? "ユーザーIDまたはパスワードが違います。"
+                    response.status === 401 ? "メールアドレスまたはパスワードが違います。"
                         : "ログインに失敗しました。",
                 );
                 return;
@@ -94,11 +94,11 @@ export default function Login() {
                     </Title>
                     <Stack gap="md">
                         <TextInput
-                            label="ユーザーID"
-                            placeholder="ユーザーIDを入力"
-                            name="userId"
-                            autoComplete="username"
-                            error={fieldErrors.userId?.[0]}
+                            label="メールアドレス"
+                            placeholder="メールアドレスを入力"
+                            name="email"
+                            autoComplete="email"
+                            error={fieldErrors.email?.[0]}
                         />
                         <PasswordInput
                             label="パスワード"
