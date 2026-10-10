@@ -31,7 +31,11 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { message: z.flattenError(parsed.error) },
+        {
+          message:
+            z.flattenError(parsed.error).fieldErrors.title?.[0] ??
+            "入力内容を確認して下さい",
+        }
         { status: 400 },
       );
     }
