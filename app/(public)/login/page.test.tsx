@@ -112,7 +112,7 @@ describe("ログイン画面", () => {
     });
 
     it.each([
-        [401, "ユーザーIDまたはパスワードが違います。"],
+        [401, "メールアドレスまたはパスワードが違います。"],
         [500, "ログインに失敗しました。"],
     ])("HTTP %i の場合にエラーを表示する", async (status, message) => {
         fetchMock.mockResolvedValue({ ok: false, status });

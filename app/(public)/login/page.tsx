@@ -70,7 +70,7 @@ export default function Login() {
             // ログイン失敗
             if (!response.ok) {
                 setError(
-                    response.status === 401 ? "ユーザーIDまたはパスワードが違います。"
+                    response.status === 401 ? "メールアドレスまたはパスワードが違います。"
                         : "ログインに失敗しました。",
                 );
                 return;
@@ -97,7 +97,7 @@ export default function Login() {
                             label="メールアドレス"
                             placeholder="メールアドレスを入力"
                             name="email"
-                            autoComplete="username"
+                            autoComplete="email"
                             error={fieldErrors.email?.[0]}
                         />
                         <PasswordInput
