@@ -62,16 +62,16 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const data = await response.json();
       return NextResponse.json(data, {
         status: response.status,
       });
     }
-    return NextResponse.json(data, {
-      status: 201,
-    });
+    return NextResponse.json(
+      { message: "Todoを追加しました。" },
+      { status: 201 },
+    );
   } catch {
     return NextResponse.json(
       { message: "Todoの追加に失敗しました。" },
