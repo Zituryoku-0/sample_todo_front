@@ -5,7 +5,6 @@ import {
     Paper,
     Title,
 } from "@mantine/core";
-import TodoForm from "@/app/components/todo-form";
 import TodoList from "@/app/components/todo-list";
 
 export const metadata: Metadata = {
