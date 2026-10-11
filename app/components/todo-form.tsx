@@ -7,7 +7,7 @@ const todoSchema = z.object({
     title: z.string().trim().min(1, "Todoを入力して下さい").max(100, "Todoは100文字以内で入力して下さい"),
 });
 
-export default function TodoForm() {
+export default function TodoForm({ onAdded }: { onAdded?: () => void | Promise<void> }) {
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const [titleError, setTitleError] = useState("");
@@ -44,6 +44,7 @@ export default function TodoForm() {
             }
 
             setTitle("");
+            void onAdded?.();
         } catch {
             setError("Todoの追加に失敗しました。");
         } finally {

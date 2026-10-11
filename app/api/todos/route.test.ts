@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import { POST } from "./route";
+import { GET, POST } from "./route";
 
 const cookieGet = vi.hoisted(() => vi.fn());
 vi.mock("next/headers", () => ({ cookies: async () => ({ get: cookieGet }) }));
@@ -9,6 +9,65 @@ const request = (body: unknown) => new Request("http://localhost/api/todos", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(body),
+});
+
+describe("GET /api/todos", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    vi.stubEnv("AUTH_API_URL", "https://api.example.test");
+    vi.stubGlobal("fetch", fetchMock);
+    cookieGet.mockReturnValue({ value: "test-token" });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it("認証トークンを付けて一覧を取得する", async () => {
+    const todos = [{ id: 1, title: "買い物", completed: false }];
+    fetchMock.mockResolvedValue(Response.json(todos));
+
+    const response = await GET();
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual(todos);
+    expect(fetchMock).toHaveBeenCalledWith("https://api.example.test/todos", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer test-token",
+      },
+      cache: "no-store",
+    });
+  });
+
+  it("API の設定がなければ取得しない", async () => {
+    vi.stubEnv("AUTH_API_URL", "");
+    const response = await GET();
+    expect(response.status).toBe(500);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("認証 Cookie がなければ取得しない", async () => {
+    cookieGet.mockReturnValue(undefined);
+    const response = await GET();
+    expect(response.status).toBe(401);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("バックエンドのエラーを転送する", async () => {
+    fetchMock.mockResolvedValue(Response.json({ message: "取得できません" }, { status: 503 }));
+    const response = await GET();
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ message: "取得できません" });
+  });
+
+  it("通信に失敗したら 500 を返す", async () => {
+    fetchMock.mockRejectedValue(new TypeError("network error"));
+    const response = await GET();
+    expect(response.status).toBe(500);
+    expect(await response.json()).toEqual({ message: "Todoの取得に失敗しました。" });
+  });
 });
 
 describe("POST /api/todos", () => {
