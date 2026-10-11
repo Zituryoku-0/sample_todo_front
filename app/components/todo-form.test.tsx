@@ -42,6 +42,22 @@ describe("TodoForm", () => {
     });
   });
 
+  it("追加成功時だけ一覧更新コールバックを呼ぶ", async () => {
+    const onAdded = vi.fn();
+    fetchMock.mockResolvedValueOnce({ ok: true });
+    fetchMock.mockResolvedValueOnce({ ok: false, json: async () => ({ message: "登録できません" }) });
+    render(<MantineProvider env="test"><TodoForm onAdded={onAdded} /></MantineProvider>);
+
+    fireEvent.change(screen.getByLabelText("todo"), { target: { value: "買い物" } });
+    fireEvent.click(screen.getByRole("button", { name: "追加" }));
+    await waitFor(() => expect(onAdded).toHaveBeenCalledTimes(1));
+
+    fireEvent.change(screen.getByLabelText("todo"), { target: { value: "掃除" } });
+    fireEvent.click(screen.getByRole("button", { name: "追加" }));
+    expect(await screen.findByText("登録できません")).toBeInTheDocument();
+    expect(onAdded).toHaveBeenCalledTimes(1);
+  });
+
   it("API のエラーを表示する", async () => {
     fetchMock.mockResolvedValue({ ok: false, json: async () => ({ message: "登録できません" }) });
     showForm();
